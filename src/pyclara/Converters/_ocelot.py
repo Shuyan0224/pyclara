@@ -145,8 +145,11 @@ def elegant2ocelot(elegant_file,
                                      Dyp = etayp)
 
 
+    ocelot_twiss = ocelot.twiss(ml,ocelot_twiss0)
+
     return {"ocelot_lattice":ml,
-            "ocelot_twiss0":ocelot_twiss0}
+            "ocelot_twiss0":ocelot_twiss0,
+            "ocelot_twiss":ocelot_twiss}
 
 
 
