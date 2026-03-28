@@ -13,5 +13,6 @@ def elegant2rftrack(elegant_file,
                     elegant_twi=None):
 
     # load elegant lattice file
-    lte = _elegant_lte_loader(elegant_file)
+    if isinstance(elegant_file, str) :
+        lte = _elegant_lte_loader(elegant_file)
 

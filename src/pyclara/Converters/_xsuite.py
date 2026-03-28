@@ -21,12 +21,18 @@ def elegant2xsuite(elegant_file,
                    elegant_ps = None) :
 
     # load elegant lattice file
-    lte = _elegant_lte_loader(elegant_file)
+    if isinstance(elegant_file, str) :
+        lte = _elegant_lte_loader(elegant_file)
 
     # load elegant twiss file if provided
     if elegant_twi is not None :
         if isinstance(elegant_twi, str) :
             elegant_twi = _sdds.load(elegant_twi)
+
+    # load elegant phase space file if provided
+    if elegant_ps is not None :
+        if isinstance(elegant_ps, str) :
+            elegant_ps = _sdds.load(elegant_ps)
 
     # create xsuite environment
     env = _xtrack.Environment()

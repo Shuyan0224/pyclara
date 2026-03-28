@@ -16,7 +16,8 @@ def elegant2bdsim_gmad(elegant_file,
                        overwrite=True):
 
     # load elegant lattice file
-    lte = _elegant_lte_loader(elegant_file)
+    if isinstance(elegant_file, str) :
+        lte = _elegant_lte_loader(elegant_file)
 
     # load elegant twiss file if provided
     if elegant_twi is not None :

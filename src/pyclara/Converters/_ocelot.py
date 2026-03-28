@@ -11,27 +11,24 @@ except ImportError:
     print("ocelot not found, cannot convert yaml to ocelot line")
 
 def elegant2ocelot(elegant_file,
-                   line_name = "FEBE",
                    start_element="CLA-FEA-SIM-DIP-04-END",
                    end_element="CLA-FED-SIM-DUMP-01-START",
                    elegant_twi = None,
                    elegant_ps = None) :
 
-    '''
-    # Create converter object
-    c = ElegantLatticeConverter()
-
-    # Read and convert the lattice
-    cell = c.elegant2ocelot(elegant_file)
-    '''
-
     # load elegant lattice file
-    lte = _elegant_lte_loader(elegant_file)
+    if isinstance(elegant_file, str) :
+        lte = _elegant_lte_loader(elegant_file)
 
     # load elegant twiss file if provided
     if elegant_twi is not None :
         if isinstance(elegant_twi, str) :
             elegant_twi = _sdds.load(elegant_twi)
+
+    # load elegant phase space file if provided
+    if elegant_ps is not None :
+        if isinstance(elegant_ps, str) :
+            elegant_ps = _sdds.load(elegant_ps)
 
     oe_list = []
     # loop over elements
@@ -119,6 +116,7 @@ def elegant2ocelot(elegant_file,
 
         if adding :
             oe_list_used.append(e)
+
         if e == end_element :
             adding = False
 
