@@ -13,6 +13,9 @@ print
 RMAT*
 TWISS*
 
+# impactX
+*.0.0
+
 # bdsim
 *gmad
 
