@@ -31,6 +31,17 @@ def elegant2impactx(elegant_file,
     if isinstance(elegant_file, str) :
         lte = _elegant_lte_loader(elegant_file)
 
+    # set default start/end
+    if start_element == "" or start_element is None :
+        lte_keys_list = list(lte.keys())
+        print(lte_keys_list[0])
+        start_element = lte[lte_keys_list[0]]['NAME']
+
+    if end_element == "" or end_element is None :
+        lte_keys_list = list(lte.keys())
+        print(lte_keys_list[-2])
+        end_element = lte[lte_keys_list[-1]]['NAME']
+
     # load elegant twiss file if provided
     if elegant_twi is not None :
         if isinstance(elegant_twi, str) :
@@ -49,6 +60,10 @@ def elegant2impactx(elegant_file,
         ee = lte[k] # elegant element
         ename = ee['NAME']
         etype = ee['TYPE']
+
+        # skip over LINE
+        if etype.upper() == "LINE":
+            continue
 
         ie = None
 
@@ -120,7 +135,7 @@ def elegant2impactx(elegant_file,
         if adding :
             ie_list_used.append(e)
 
-        if e == end_element :
+        if e.name == end_element :
             adding = False
 
     # get charge
