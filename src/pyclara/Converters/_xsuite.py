@@ -77,8 +77,13 @@ def elegant2xsuite(elegant_file,
         elif ee['TYPE'] == "CSRCSBEND" or ee['TYPE'] == "CSBEND" :
             env[name+".L"] = float(ee['L'])
             env[name+".ANGLE"] = float(ee['ANGLE'])
+            env[name+".E1"] = float(ee['E1'])
+            env[name+".E2"] = float(ee['E2'])
             env.new(name, _xtrack.Bend,
-                    length = name+".L", angle = name+".ANGLE")
+                    length = name+".L",
+                    angle = name+".ANGLE",
+                    edge_entry_angle = name+".E1",
+                    edge_exit_angle = name+".E2")
         elif ee['TYPE'] == 'KQUAD':
             env[name+".L"] = float(ee['L'])
             env[name+".K1"] = float(ee['K1'])

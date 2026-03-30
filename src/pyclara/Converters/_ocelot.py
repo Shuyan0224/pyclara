@@ -79,7 +79,9 @@ def elegant2ocelot(elegant_file,
             float(ee['ANGLE'])
             oe = SBend(eid = ename,
                        l = ee['L'],
-                       angle = ee['ANGLE'])
+                       angle = ee['ANGLE'],
+                       e1 = ee['E1'],
+                       e2 = ee['E2'])
         elif etype == 'KQUAD':
             oe = Quadrupole(eid = ename,
                             l = ee['L'],

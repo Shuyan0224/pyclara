@@ -81,7 +81,12 @@ def elegant2bdsim_gmad(elegant_file,
             be = pybdsim.Builder.SBend(ename,
                                        ee['L'],
                                        ee['ANGLE'],
-                                       magnetGeometryType="none") # TODO fix for short magnets
+                                       magnetGeometryType="none",
+                                       e1 = ee['E1'],
+                                       e2 = ee['E2'],
+                                       fint=ee['FINT'],
+                                       fintx=ee['FINT'],
+                                       hgap=ee['HGAP']) # TODO fix for short magnets
         elif etype == 'KQUAD':
             be = pybdsim.Builder.Quadrupole(ename,
                                             ee['L'],
