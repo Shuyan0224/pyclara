@@ -8,7 +8,7 @@ from ._elegant import elegant_lte_loader as _elegant_lte_loader
 
 try :
     import xsuite as _xsuite
-    import xobjects as _xobject
+    import xobjects as _xobjects
     import xtrack as _xtrack
 except ImportError:
     print("xsuite not found, cannot convert yaml to xsuite line")
@@ -195,6 +195,8 @@ def elegant2xsuite(elegant_file,
 
     if elegant_ps is not None and elegant_twi is None:
         xtrack_particles = elegant2xsuite_particles(elegant_ps, xtrack_line)
+        context = _xobjects.ContextCpu()
+        xtrack_line.build_tracker(context)
         xtrack_line.track(xtrack_particles)
 
     return {"env":env,
@@ -218,8 +220,9 @@ def elegant2xsuite_particles(elegant_ps, xtrack_line) :
     xtrack_line.set_particle_ref(pdg_id_0=11,
                                  p0c=m_e_eV*p.mean())
 
-    px = xp*p # TODO larger angle?
-    py = yp*p # TODO larger angle?
+    px = xp # TODO larger angle?
+    py = yp # TODO larger angle?
+
     zeta = (t-t.mean())*_constants.c*xtrack_line.particle_ref.beta0[0]
     delta = (p-p.mean())/p.mean()
 
@@ -263,25 +266,39 @@ def xsuite_Add_ParticlesMonitor(line, num_particles=10000) :
 
 def xsuite_CalculateBeamSize(line) :
 
-    beam_sizes = {}
-    beam_sizes['element_names'] = []
-    beam_sizes['n'] = []
-    beam_sizes['s'] = []
-    beam_sizes['x'] = []
-    beam_sizes['px'] = []
+    beam = {}
+    beam['element_names'] = []
+    beam['n'] = []
+    beam['s'] = []
+    beam['x_mean'] = []
+    beam['x_sigma'] = []
+    beam['px_mean'] = []
+    beam['px_sigma'] = []
+    beam['y_mean'] = []
+    beam['y_sigma'] = []
+    beam['py_mean'] = []
+    beam['py_sigma'] = []
 
     for ename in line.element_names :
         e = line[ename]
 
         if isinstance(e,_xtrack.ParticlesMonitor) :
-            beam_sizes['element_names'].append(ename)
-            beam_sizes['s'].append(e.s[0,0])
-            beam_sizes['n'].append(len(e.x[:,0]))
-            beam_sizes['x'].append(e.x[:,0].std())
-            beam_sizes['px'].append(e.px[:,0].std())
+            beam['element_names'].append(ename)
+            beam['s'].append(e.s[0,0])
+            beam['n'].append(len(e.x[:,0]))
+
+            beam['x_mean'].append(e.x[:,0].mean())
+            beam['x_sigma'].append(e.x[:,0].std())
+            beam['px_mean'].append(e.px[:,0].mean())
+            beam['px_sigma'].append(e.px[:,0].std())
+
+            beam['y_mean'].append(e.y[:,0].mean())
+            beam['y_sigma'].append(e.y[:,0].std())
+            beam['py_mean'].append(e.py[:,0].mean())
+            beam['py_sigma'].append(e.py[:,0].std())
 
     # make numpy arrays
-    for k in beam_sizes.keys() :
-        beam_sizes[k] = _np.array(beam_sizes[k])
+    for k in beam.keys() :
+        beam[k] = _np.array(beam[k])
 
-    return beam_sizes
+    return beam
