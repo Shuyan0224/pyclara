@@ -235,6 +235,18 @@ def elegant2xsuite_particles(elegant_ps, xtrack_line) :
 
     return particles
 
+def twiss_dict2xsuite_twissinit(twiss_dict) :
+    xtrack_twiss0 = _xtrack.TwissInit(betx=twiss_dict['beta_x'],
+                                      alfx=twiss_dict['alpha_x'],
+                                      dx=0,
+                                      dpx=0,
+                                      bety=twiss_dict['beta_y'],
+                                      alfy=twiss_dict['alpha_y'],
+                                      dy=0,
+                                      dpy=0)
+    return xtrack_twiss0
+
+
 def xsuite2fbpic(particles) :
     '''Convert xsuite particles to fbpic dict of arrays'''
     pass
@@ -256,6 +268,7 @@ def xsuite_Remove_DriftSlices(line) :
 
 
 def xsuite_Add_ParticlesMonitor(line, num_particles=10000) :
+
     for ename in line.element_names :
         e = line[ename]
 
