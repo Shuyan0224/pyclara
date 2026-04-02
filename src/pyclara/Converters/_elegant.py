@@ -127,8 +127,8 @@ def elegant_lte_splitter(filename, split_element):
     split_idx = full_line.index(split_element)
 
 
-    line1 = full_line[:split_idx]    # before split element
-    line2 = ['START'] + full_line[split_idx:]    # from split element onwards
+    line1 = full_line[:split_idx+1]    # before split element
+    line2 = ['START'] + full_line[split_idx+1:]    # from split element onwards
 
     # Step 4: build two element dicts
     set1 = set(e.upper() for e in line1)
@@ -382,11 +382,13 @@ def sdds2fbpic(sddsfile) :
     xpbeam = np.array(f.getColumnValueList("xp"))
     ypbeam = np.array(f.getColumnValueList("yp"))
     dtbeam = np.array(f.getColumnValueList("dt"))
+    zbeam = np.array(f.getColumnValueList("dt"))* constants.c
     pbeam = np.array(f.getColumnValueList("p"))
     pxbeam = xpbeam * pbeam
     pybeam = ypbeam * pbeam
 
-    return {"x" : xbeam, "y" : ybeam, "xp" : xpbeam, "yp" : ypbeam, "dt" : dtbeam, "p" : pbeam, "px" : pxbeam, "py" : pybeam}
+
+    return {"x" : xbeam, "y" : ybeam, "z" : zbeam, "xp" : xpbeam, "yp" : ypbeam, "dt" : dtbeam, "p" : pbeam, "px" : pxbeam, "py" : pybeam}
 
 def fbpic2twiss(inputfile , particles_group):
     x_all = []
