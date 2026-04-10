@@ -26,7 +26,9 @@ maintainers = [
   {name = "Stewart Boogert", email = "stewart.boogert@cockcroft.ac.uk"}
 ]
 dependencies = [
-  "soliday.sdds"
+  "soliday.sdds",
+  "pyfftw",
+  "matplotlib"
 ]
 
 [project.optional-dependencies]
