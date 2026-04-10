@@ -143,7 +143,6 @@ class Fbpic_runner:
         print(f"Transverse RMS(sigma_r): {self.beam_sigma_r*1e6} µm")
         print(f"normalised emittance: {n_emit*1e6}µm*mrad")
 
-    
     def set_input_dict(self, input):
         # Read particle data
         # Read positions and monmentum
@@ -178,6 +177,10 @@ class Fbpic_runner:
                                                     y=self.y_beam, z=self.z_beam, ux=self.px_beam, 
                                                     uy =self.py_beam, uz=self.pz_beam, w=self.w_beam,
                                                     z_injection_plane = 1 * self.lambda_p)
+
+    def set_input_sdds(self, sdds_dir):
+        f = pyclara.Converters.sdds2fbpic(sdds_dir)
+        self.set_input_dict(f)
         
 
     def run(self, outputdir, diag_period = 0, fieldtype =["E", "rho"], extra_species = None):
@@ -221,9 +224,10 @@ class Fbpic_runner:
             print(f"Simulation failed with error: {e}")
             print("Try reducing the time step or beam density further.")
                 
-    def get_output_sdds(self,outputdir,species):
+    def get_output_sdds(self, outputdir, z_offset, species):
         input = f"{self.write_dir}/hdf5/data{self.diag_period:08d}.h5"
-        pyclara.Converters.fbpic2sdds(input, outputdir, species)
+        pyclara.Converters.fbpic2sdds(input, outputdir, z_offset, species)
+        print(f"{self.write_dir}/hdf5/data{self.diag_period:08d}.h5 has been converted.")
 
 
 
