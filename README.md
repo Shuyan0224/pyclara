@@ -130,28 +130,67 @@ Default parameters are set for the CLARA-FEBE plasma stage. Override before runn
 ```python
 f = pyclara.Simulation.TrackerFBPIC.Fbpic_runner(run_dir)
  
-# plasma parameters
-f.set_plasma_density(1e22)              # background plasma density [m^-3]
-f.set_Moving_Window(1.5, 1, 512, 96)   # zmax, rmax in units of lambda_p, Nz, Nr
-f.set_sim_length(2e-3)                  # total propagation distance [m]
-f.set_beam_charge(250)                  # beam charge [pC]
-f.set_Sim_control(n_order=-1, Nm=2)     # solver order, azimuthal modes
+# parameters
+f.set_Sim_control(
+    use_cuda = False,   # False = CPU , True = GPU 
+    n_order  = -1,      # -1  = infinite order, most accurate, for single GPU or CPU
+                        # 32 = finite order, faster, for multi-GPU MPI
+    Nm       = 2        # 1 = cylindrically symmetric (fastest, ideal beam)
+                        # 2 = captures dipole asymmetry (recommended for realistic beams)
+                        # 3 = captures quadrupole asymmetry (strongly misaligned beams)
+)
+
+f.set_plasma_density(n0=1e22)   # n0 is background plasma density [m^-3]
+
+f.get_lambda_p() #checking the plasma wavelength
+
+f.set_Moving_Window(
+    zmax = 1.5,   # window spans [-zmax, +zmax]*lambda_p longitudinally
+    rmax = 1,     # radial extent in units of lambda_p
+    Nz   = 512,   # number of grid cells in the longitudinal direction
+    Nr   = 96     # number of grid cells in the radial direction
+                   # more cells = finer resolution, slower simulation
+)
+
+f.set_sim_length(total_propagation = 2e-3)   
+                    # total propagation distance through plasma [m]
+                    # N_steps is computed automatically from this
+
+f.set_plasma_size(
+    p_zmin = 1,   # plasma start position in units of lambda_p
+                   # beam is injected before this point and this need indisde moving window.
+    p_nz   = 2,   # macro-particles per cell longitudinally
+    p_nr   = 2,   # macro-particles per cell radially
+    p_nt   = 4    # macro-particles per cell azimuthally
+                   # more particles per cell = less noise, slower simulation
+)
+
+f.set_beam_charge(beam_charge = 250)   
+                        # total beam charge [pC]
+                        # used to compute macro-particle weights
+
  
 # inject a Gaussian witness beam
 f.set_input_Gaussian(
     sigma_z          = 1.4e-5,        # longitudinal RMS [m]
     sigma_r          = 1.85e-5,       # transverse RMS [m]
     n_emit           = 4.426719e-6,   # normalised emittance [m·rad]
-    n_macroparticles = 262144
+    n_macroparticles = 262144,       # number of macro-particles
+    injection_plane  = 1             # injection plane in units of lambda_p
 )
+
  
-# or inject a real beam from Elegant output
+# or inject a real beam from beam tracking code
 f.set_input_h5(elegant_output.h5)
-#you can always use Converters to convert any lattice file to hdf5 files
+ # use pyclara.Converters to convert any lattice file to the required HDF5 format
+ 
 # run with diagnostics
 f.run(
-    diag_period = 0,              # 0 = save only final step
-    fieldtype   = ['E', 'rho']    # field components to save
+    diag_period = 0,              # steps between diagnostic saves
+                                   # 0 = save only the final step
+                                   # e.g. 100 = save every 100 steps
+    fieldtype   = ['E', 'rho'],    # options: 'E', 'B', 'rho', 'J'
+    extra_species = None          # additional species e.g. {'witness': witness_beam}
 )
  
 output = f.get_output_h5()
