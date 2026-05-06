@@ -25,7 +25,7 @@ class TrackerBeamline:
                 self.particles.append(particles)
 
             # track through tracker and update particles
-            particles = t.track(self.particles)
+            particles = t.track(particles)
 
 
         return particles
