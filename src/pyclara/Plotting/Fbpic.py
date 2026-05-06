@@ -188,6 +188,8 @@ def divergence(hdf5file,species):
         px = beam['momentum/x'][:]
         py = beam['momentum/y'][:]
         pz = beam['momentum/z'][:]
+        x = beam['position/x'][:] * 1e6
+        y = beam['position/y'][:] * 1e6
         xp = px / pz * 1e3  # mrad
         yp = py / pz * 1e3  # mrad
         # --- x-x' ---
